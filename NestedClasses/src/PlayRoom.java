@@ -1,7 +1,7 @@
 import Task1.Model;
 import Task2.Game;
 import Task1.GameConsole;
-
+import Task1.Brand;
 import java.util.Arrays;
 import java.util.Comparator;
 public class PlayRoom {
@@ -25,6 +25,8 @@ public class PlayRoom {
 
         // Создаем объект GameConsole
         GameConsole gameConsole = new GameConsole(Task1.Brand.SONY, Model.PS4_PRO, "PS4SerialNumber");
+
+
 
         // Пример использования созданных объектов
         System.out.println("Physical Games:");
@@ -52,7 +54,7 @@ public class PlayRoom {
         System.out.println("Is Console On: " + gameConsole.isOn());
 
 
-        // Сортировка массива с физическими дисками по жанру
+        // Сортировка по жанру
         Arrays.sort(physicalGames, new Comparator<Game.GameDisk>() {
             @Override
             public int compare(Game.GameDisk game1, Game.GameDisk game2) {
@@ -60,7 +62,7 @@ public class PlayRoom {
             }
         });
 
-        // Сортировка массива с виртуальными играми по рейтингу
+        // Сортировка по рейтингу
         Arrays.sort(virtualGames, new Comparator<Game.VirtualGame>() {
             @Override
             public int compare(Game.VirtualGame game1, Game.VirtualGame game2) {
@@ -78,5 +80,7 @@ public class PlayRoom {
         for (Game.VirtualGame virtualGame : virtualGames) {
             System.out.println("Rating: " + virtualGame.getRating() + ", Name: " + virtualGame.getData().getName());
         }
+
+
     }
 }

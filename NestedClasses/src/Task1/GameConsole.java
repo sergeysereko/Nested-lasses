@@ -2,7 +2,8 @@ package Task1;
 
 import Task1.Brand;
 import Task1.Model;
-public class GameConsole {
+import Task2.Game;
+public class GameConsole implements Powered {
 
     private final Brand brand;
     private final Model model;
@@ -10,7 +11,8 @@ public class GameConsole {
     private final Gamepad firstGamepad;
     private final Gamepad secondGamepad;
     private boolean isOn;
-
+    private Game activeGame;
+    private int counter;
 
 
     public GameConsole(Brand brand, Model model, String serial) {
@@ -20,7 +22,71 @@ public class GameConsole {
         this.firstGamepad = new Gamepad(brand, 1);
         this.secondGamepad = new Gamepad(brand, 2);
         this.isOn = false;
+        this.activeGame = null;
+        this.counter = 0;
     }
+
+    @Override
+    public void powerOn() {
+        isOn = true;
+        System.out.println("Консоль включена");
+    }
+
+    @Override
+    public void powerOff() {
+        isOn = false;
+        System.out.println("Консоль выключена");
+    }
+
+
+    public void loadGame(Game game) {
+        activeGame = game;
+        System.out.println("Игра " + game.getName() + " игра загружается");
+    }
+
+
+    public void playGame() {
+        if (!isOn) {
+            System.out.println("Игровая консоль выключена. Пожалуйста, включите её");
+            return;
+        }
+
+        checkStatus();
+
+        if (activeGame != null) {
+            System.out.println("Играем " + activeGame.getName());
+            System.out.println("Уровень заряда геймпадов:");
+            firstGamepad.printChargeLevel();
+            secondGamepad.printChargeLevel();
+
+            firstGamepad.decreaseChargeLevel();
+            secondGamepad.decreaseChargeLevel();
+
+            if (firstGamepad.getChargeLevel() <= 0) {
+                firstGamepad.setOn(false);
+                System.out.println("Первый геймпад отключился из-за низкого заряда");
+            }
+
+            if (secondGamepad.getChargeLevel() <= 0) {
+                secondGamepad.setOn(false);
+                System.out.println("Второй геймпад отключился из-за низкого заряда");
+            }
+        }
+    }
+
+    private void checkStatus() {
+        if (!firstGamepad.isOn() && !secondGamepad.isOn()) {
+            counter++;
+            if (counter > 5) {
+                powerOff();
+                throw new InactivityException("Игровая консоль отключается из-за бездействия");
+            }
+            System.out.println("Подключите геймпад. Счетчик ожидания: " + counter);
+        } else {
+            counter = 0;
+        }
+    }
+
 
 
     // Класс Gamepad
@@ -54,6 +120,14 @@ public class GameConsole {
                     '}';
         }
 
+        public void printChargeLevel() {
+            System.out.println("Gamepad " + connectedNumber + " Уровень заряда: " + chargeLevel);
+        }
+
+        public void decreaseChargeLevel() {
+            chargeLevel -= 10;
+        }
+
         public Brand getBrand() {
             return brand;
         }
@@ -73,6 +147,7 @@ public class GameConsole {
         public double getChargeLevel() {
             return chargeLevel;
         }
+
 
         public boolean isOn() {
             return isOn;
@@ -124,11 +199,33 @@ public class GameConsole {
         return secondGamepad;
     }
 
+    public Game getActiveGame() {
+        return activeGame;
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+
     public boolean isOn() {
         return isOn;
     }
 
     public void setOn(boolean on) {
         isOn = on;
+    }
+
+    public void setActiveGame(Game activeGame) {
+        this.activeGame = activeGame;
+    }
+
+    public void setCounter(int counter) {
+        this.counter = counter;
+    }
+
+    private static class InactivityException extends RuntimeException {
+        public InactivityException(String message) {
+            super(message);
+        }
     }
 }
