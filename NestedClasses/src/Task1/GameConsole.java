@@ -1,5 +1,7 @@
 package Task1;
 
+import Task1.Brand;
+import Task1.Model;
 public class GameConsole {
 
     private final Brand brand;

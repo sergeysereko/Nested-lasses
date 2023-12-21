@@ -1,5 +1,5 @@
 package Task2;
 
-public enum Ganre {
+public enum Genre {
     ACTION, SPORT, RACE;
 }
